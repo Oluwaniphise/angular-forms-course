@@ -2,26 +2,41 @@
   <mat-card-title>Login (Reactive)</mat-card-title>
   <mat-card-content>
 
-    <form class="login-form data-form">
+    <form class="login-form data-form" [formGroup]="form">
 
       <mat-form-field>
 
-        <input matInput type="email" name="email"
-               placeholder="Email">
+        <input matInput type="email"  name="email"
+        formControlName="email" placeholder="Email">
+        <mat-error *ngIf="email.errors?.required">Email is required</mat-error>
 
       </mat-form-field>
 
       <mat-form-field>
 
-        <input matInput type="password" placeholder="Password">
+        <input matInput type="password"  placeholder="Password"
+        formControlName="password">
+     
 
       </mat-form-field>
+      <ng-container 
+      *ngIf="password.errors | onlyOneError:['minlength', 'passwordStrength'] as error">
+      <div class="field-message" *ngIf="error.minlength">
+      Your password must have minimum {{ error.minlength.requiredLength }},
+    but it only has {{error.minlength.actualLength}}</div>
 
-      <button mat-raised-button color="primary">
+      <div class="field-message" *ngIf="error.passwordStrength">Your password must have lowercase, uppercase and numeric characters</div>
+
+    </ng-container>
+
+      <button mat-raised-button color="primary" [disabled]="!form.valid">
         Login
       </button>
 
     </form>
+
+    {{form.value |json}}
+    {{form.valid}}
 
   </mat-card-content>
 </mat-card>
